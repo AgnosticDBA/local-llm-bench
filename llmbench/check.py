@@ -111,10 +111,10 @@ def verify(answer, sources: dict[str, str], rules: dict[str, str], gate: dict, j
     many = [k for k, cap in gate.get("max_kept", {}).items() if len(kept.get(k, [])) > cap]
     j = judge(kept, judgement or {})
     reason = (f"too few verified {', '.join(short)}" if short else
-              f"too many {', '.join(many)} (listing everything is not an answer)" if many else
               f"only {n_kept} of {total} items verified" if ratio < gate.get("min_kept_ratio", 0.5) else
               f"found {j['found']} of {j['expected']} known gaps" if j["expected"] and j["found"] < gate.get("min_found", 0) else
-              f"wrong: {'; '.join(j['wrong'])}" if len(j["wrong"]) > gate.get("max_wrong", 99) else "")
+              f"wrong: {'; '.join(j['wrong'])}" if len(j["wrong"]) > gate.get("max_wrong", 99) else
+              f"too many {', '.join(many)} (listing everything is not an answer)" if many else "")
     return {"parsed": True, "passed": not reason, "kept": kept, "dropped": dropped,
             "kept_ratio": round(ratio, 2), "judgement": j, "reason": reason}
 

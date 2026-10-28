@@ -27,7 +27,9 @@ def rows(results: dict) -> list[dict]:
                           if j and j.get("expected") else "–")(c.get("judgement")),
             "quality": "PASS" if c.get("passed") else ("ERROR" if m.get("error") else "FAIL"),
             "min_free": _f(mem.get("free_pct_min"), "{:.0f} %"),
-            "swap_in": _f((mem.get("swapped_in_mb") or 0) / 1024 if mem.get("available") else None, "{:.1f} GB"),
+            "swap": (f"{(mem.get('swapped_in_mb') or 0) / 1024:.1f} / {(mem.get('swapped_out_mb') or 0) / 1024:.1f} GB"
+                     if mem.get("available") else "–"),
+            "peak": _f(mem.get("peak_swap_mb_s") if mem.get("available") else None, "{:.0f} MB/s"),
             "machine": r.get("memory_verdict", "unknown"),
             "note": m.get("error") or c.get("reason") or "",
         })
@@ -36,7 +38,7 @@ def rows(results: dict) -> list[dict]:
 
 COLS = [("model", "Model"), ("wall", "Wall"), ("prefill", "Prefill tok/s"), ("gen", "Gen tok/s"),
         ("tokens", "Tokens"), ("kept", "Kept"), ("dropped", "Dropped"), ("judgement", "Judgement"), ("quality", "Quality"),
-        ("min_free", "Min free"), ("swap_in", "Swapped in"), ("machine", "Rest of machine")]
+        ("min_free", "Min free"), ("swap", "Swap in / out"), ("peak", "Peak swap"), ("machine", "Rest of machine")]
 
 
 def table(results: dict) -> str:

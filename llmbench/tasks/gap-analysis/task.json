@@ -23,7 +23,7 @@
    "gaps": 1
   },
   "max_kept": {
-   "strengths": 6,
+   "strengths": 8,
    "gaps": 8
   },
   "min_kept_ratio": 0.6,

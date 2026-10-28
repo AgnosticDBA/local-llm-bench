@@ -16,7 +16,7 @@
   "name": "gap-analysis",
   "description": "Match a CV against a job posting: quotes must be verbatim, and the known gaps must be found (fictional data, with traps)",
   "dir": "built-in:gap-analysis",
-  "fingerprint": "e3072cbf87a797e4ba3ba3e4e4df58084a1a7f98da515a08166c42785b693889"
+  "fingerprint": "c99600b5b8d9ab0b61cd9745062de242f72a896cdb06afb9a2e7c2b8c3144045"
  },
  "repeats": 1,
  "runs": [

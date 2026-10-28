@@ -55,6 +55,15 @@ class Ollama:
         except (OSError, ValueError):
             return None
 
+    def has_model(self, model: str) -> bool | None:
+        """True or False if the server lists its models, None if it could not be asked."""
+        try:
+            with urllib.request.urlopen(self.url + "/api/tags", timeout=10) as r:
+                names = {n for m in json.load(r).get("models", []) for n in (m.get("name"), m.get("model")) if n}
+        except (OSError, ValueError, AttributeError):
+            return None
+        return model in names or f"{model}:latest" in names
+
     def model_bytes(self, model: str) -> int | None:
         """Size on disk: the best cheap guess at how much memory the weights will take."""
         try:
@@ -130,6 +139,14 @@ class OpenAICompat:
 
     def model_bytes(self, model: str) -> int | None:
         return None
+
+    def has_model(self, model: str) -> bool | None:
+        try:
+            with urllib.request.urlopen(self.url + "/models", timeout=10) as r:
+                ids = {m.get("id") for m in json.load(r).get("data", [])}
+        except (OSError, ValueError, AttributeError):
+            return None
+        return model in ids if ids else None          # some servers list nothing yet serve anything
 
     def unload(self, model: str) -> None:
         pass  # no standard way; restart the server between models for a cold load

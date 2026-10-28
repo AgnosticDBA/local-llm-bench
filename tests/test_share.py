@@ -166,6 +166,23 @@ class Share(unittest.TestCase):
         self.assertTrue(share.verify_text(forged))
         self.assertTrue(share.verify_text(md.replace('"kept": {', '"kept": null, "_": {', 1)))
 
+    def test_run_refuses_missing_models_before_starting(self):
+        from llmbench import backends
+        class Fake(backends.Ollama):
+            def has_model(self, m): return m == "qwen3:8b"
+            def chat(self, *a): raise AssertionError("must not run")
+        orig = backends.make
+        backends.make = lambda kind, url: Fake("http://127.0.0.1:1")
+        try:
+            with tempfile.TemporaryDirectory() as d:
+                with self.assertRaises(SystemExit) as e:
+                    cli.main(["run", "-m", "qwen3:8b", "-m", "qwen3:14b", "--out", str(Path(d) / "runs")])
+                self.assertFalse((Path(d) / "runs").exists(), "no run folder when nothing runs")
+            self.assertIn("ollama pull qwen3:14b", str(e.exception.code))
+            self.assertNotIn("pull qwen3:8b", str(e.exception.code))
+        finally:
+            backends.make = orig
+
     def test_unexpected_flags_added_fields(self):
         s = share.summary(results())
         s["runs"][0]["answer"] = "x"

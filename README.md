@@ -76,11 +76,11 @@ task:    gap-analysis
   273 s, 25.5 tok/s, PASS, machine comfortable
 ```
 
-| Model | Wall | Prefill tok/s | Gen tok/s | Tokens | Kept | Dropped | Judgement | Quality | Min free | Swapped in | Rest of machine |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| qwen3:8b | 763 s | 220 | 16.3 | 12288 | – | – | – | FAIL | 53 % | 0.2 GB | comfortable |
-| qwen3:14b | 141 s | 109 | 11.1 | 1367 | 5 / 3 | 1 | 3/4 gaps | PASS | 41 % | 0.0 GB | comfortable |
-| Qwen3.6-35B-A3B UD-Q3_K_XL | 273 s | 394 | 25.5 | 6669 | 5 / 6 | 0 | 4/4 gaps | PASS | 10 % | 0.0 GB | comfortable |
+| Model | Wall | Prefill tok/s | Gen tok/s | Tokens | Kept | Dropped | Judgement | Quality | Min free | Swap in / out | Peak swap | Rest of machine |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| qwen3:8b | 763 s | 220 | 16.3 | 12288 | – | – | – | FAIL | 53 % | 0.2 / 0.0 GB | 17 MB/s | comfortable |
+| qwen3:14b | 141 s | 109 | 11.1 | 1367 | 5 / 3 | 1 | 3/4 gaps | PASS | 41 % | 0.0 / 0.0 GB | 1 MB/s | comfortable |
+| Qwen3.6-35B-A3B UD-Q3_K_XL | 273 s | 394 | 25.5 | 6669 | 5 / 6 | 0 | 4/4 gaps | PASS | 10 % | 0.0 / 0.4 GB | 137 MB/s | comfortable |
 
 What that run shows:
 
@@ -108,9 +108,10 @@ The full report for that run is in [`examples/m1pro-32gb/`](examples/m1pro-32gb/
 | Kept | Items whose quotes were found word for word, per list (here: strengths / gaps). |
 | Dropped | Items with a quote that is not in the source: invented, paraphrased or misattributed. |
 | Judgement | Known gaps the model found, out of those planted, plus any requirement it got backwards (a met requirement listed as a gap, or a gap listed as a strength). |
-| Quality | **PASS** if at least 2 strengths and 1 gap survive, at least 60 % of items are kept, at least 3 of the 4 known gaps are found, nothing is backwards, and no more than 6 strengths and 8 gaps are listed (listing every requirement is not an answer). |
+| Quality | **PASS** if at least 2 strengths and 1 gap survive, at least 60 % of items are kept, at least 3 of the 4 known gaps are found, nothing is backwards, and no more than 8 strengths and 8 gaps are listed (listing every requirement is not an answer). |
 | Min free | Lowest free memory during the request (macOS `memory_pressure`, Linux `MemAvailable`). |
-| Swapped in | Data the OS had to read back from swap during the request. |
+| Swap in / out | Data the OS read back from swap, and pushed out to it, during the request. Pushing your other apps out is a cost too. |
+| Peak swap | The fastest swap traffic between two samples. Over 500 MB/s, the machine stalls. |
 | Rest of machine | Swap moved in both directions during the request, plus how much swap grew. **comfortable**: under 1 GB · **swapping**: 1–8 GB · **thrashing**: over 8 GB, or over 500 MB/s at any point. These thresholds are judgement calls. |
 
 Before each run it also prints a **preflight** estimate: the model's size plus about 15 % and 1.5 GB for

@@ -21,7 +21,7 @@ MEMORY = ("free_pct_before", "free_pct_min", "free_pct_after", "swap_used_mb_bef
 DONE_REASONS = ("stop", "length", "load", "other", None)
 # sha256 of each shipped task folder. A task folder of the same name with other content is a custom task:
 # an edited copy of a built-in can carry private text just as well as a new one.
-BUILTIN = {"gap-analysis": "e3072cbf87a797e4ba3ba3e4e4df58084a1a7f98da515a08166c42785b693889"}
+BUILTIN = {"gap-analysis": "c99600b5b8d9ab0b61cd9745062de242f72a896cdb06afb9a2e7c2b8c3144045"}
 
 
 class Refused(Exception):
@@ -259,8 +259,8 @@ def markdown(shared: dict) -> str:
     lines = [f"**llmbench {shared['tool_version']}** · {shared['date']} · {mach['cpu']} ({mach['cores']} cores), "
              f"{mach['ram_gb']} GB, {mach['os']} · {shared['backend']} {shared.get('backend_version') or ''} · "
              f"task `{shared['task']['name']}`", "",
-             "| Model | Wall | Gen tok/s | Quality | Kept / dropped | Gaps found | Min free | Swapped in | Rest of machine |",
-             "|---|---|---|---|---|---|---|---|---|"]
+             "| Model | Wall | Gen tok/s | Quality | Kept / dropped | Gaps found | Min free | Swap in / out | Peak swap | Rest of machine |",
+             "|---|---|---|---|---|---|---|---|---|---|"]
     for r in shared["runs"]:
         m, c, mem = r["metrics"], r["check"], r["memory"] or {}
         kept = c["kept"] if isinstance(c["kept"], int) else sum(c["kept"].values())
@@ -268,6 +268,7 @@ def markdown(shared: dict) -> str:
             f"| {r['model']} | {m.get('wall_s') if m.get('wall_s') is not None else '–'} s | {m.get('gen_tok_s') or '–'} | "
             f"{'PASS' if c['passed'] else 'FAIL'} | {kept} / {c['dropped']} | "
             f"{c['gaps_found'] if c['gaps_expected'] else '–'}{'/' + str(c['gaps_expected']) if c['gaps_expected'] else ''} | "
-            f"{mem.get('free_pct_min') if mem.get('free_pct_min') is not None else '–'} % | {round((mem.get('swapped_in_mb') or 0) / 1024, 1)} GB | "
+            f"{mem.get('free_pct_min') if mem.get('free_pct_min') is not None else '–'} % | {round((mem.get('swapped_in_mb') or 0) / 1024, 1)} / {round((mem.get('swapped_out_mb') or 0) / 1024, 1)} GB | "
+            f"{mem.get('peak_swap_mb_s') if mem.get('peak_swap_mb_s') is not None else '–'} MB/s | "
             f"{r['memory_verdict']} |")
     return "\n".join(lines + ["", "```json", json.dumps(shared, indent=1), "```", ""])

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "local-llm-bench"
-version = "0.1.0"
+version = "0.1.1"
 description = "Will this local LLM run on my machine, and can I trust what it says? Speed, memory pressure and a quote-checked quality gate."
 readme = "README.md"
 license = { text = "MIT" }

@@ -105,6 +105,18 @@ class Quotes(unittest.TestCase):
         v = check.verify(ans, t["source_text"], t["checks"], t["gate"], t["judgement"])
         self.assertFalse(v["passed"], v["reason"])
 
+    def test_content_failure_reported_before_cap(self):
+        from llmbench import check
+        src = {"s": "alpha bravo charlie delta echo foxtrot golf hotel"}
+        v = check.verify({"l": [{"q": "alpha bravo charlie"}, {"q": "delta echo foxtrot"}]}, src, {"l[].q": "s"},
+                         {"max_kept": {"l": 1}, "min_found": 1}, {"l": {"field": "q", "must_include": ["hotel"]}})
+        self.assertTrue(v["reason"].startswith("found 0 of 1"), v["reason"])
+
+    def test_verdict_figures(self):
+        self.assertEqual(memory.why({"available": True, "swapped_in_mb": 205, "swapped_out_mb": 9626, "peak_swap_mb_s": 812.4}),
+                         " (0.2 GB in, 9.4 GB out, peak 812 MB/s)")
+        self.assertEqual(memory.why({"available": False}), "")
+
     def test_near_duplicates(self):
         from llmbench import check
         src = {"s": "the quick brown fox jumps over the lazy dog"}

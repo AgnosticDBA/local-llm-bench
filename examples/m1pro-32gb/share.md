@@ -1,10 +1,10 @@
 **llmbench 0.1.0** · 2026-10-28 · Apple M1 Pro (8P+2E cores), 32 GB, macOS 26 · ollama 0.40.11 · task `gap-analysis`
 
-| Model | Wall | Gen tok/s | Quality | Kept / dropped | Gaps found | Min free | Swapped in | Rest of machine |
-|---|---|---|---|---|---|---|---|---|
-| qwen3:8b | 762.8 s | 16.3 | FAIL | 0 / 0 | – | 53.0 % | 0.2 GB | comfortable |
-| qwen3:14b | 141.3 s | 11.1 | PASS | 8 / 1 | 3/4 | 41.0 % | 0.0 GB | comfortable |
-| hf.co/unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q3_K_XL | 273.2 s | 25.5 | PASS | 11 / 0 | 4/4 | 10.0 % | 0.0 GB | comfortable |
+| Model | Wall | Gen tok/s | Quality | Kept / dropped | Gaps found | Min free | Swap in / out | Peak swap | Rest of machine |
+|---|---|---|---|---|---|---|---|---|---|
+| qwen3:8b | 762.8 s | 16.3 | FAIL | 0 / 0 | – | 53.0 % | 0.2 / 0.0 GB | 16.7 MB/s | comfortable |
+| qwen3:14b | 141.3 s | 11.1 | PASS | 8 / 1 | 3/4 | 41.0 % | 0.0 / 0.0 GB | 1.4 MB/s | comfortable |
+| hf.co/unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q3_K_XL | 273.2 s | 25.5 | PASS | 11 / 0 | 4/4 | 10.0 % | 0.0 / 0.4 GB | 136.8 MB/s | comfortable |
 
 ```json
 {

@@ -122,6 +122,10 @@ def failed_run(model: str, rep: int, why: str) -> dict:
 def cmd_run(a) -> None:
     task = load_task(a.task)
     be = backends.make(a.backend, a.url)
+    missing = [m for m in a.model if be.has_model(m) is False]
+    if missing:
+        hint = "".join(f"\n  ollama pull {m}" for m in missing) if be.kind == "ollama" else ""
+        sys.exit(f"not on this server: {', '.join(missing)}. Nothing was run." + (f"\nTo fetch:{hint}" if hint else ""))
     info = sysinfo.collect()
     started = time.strftime("%Y-%m-%d %H:%M:%S %Z")
     Path(a.out).mkdir(parents=True, exist_ok=True)
@@ -161,7 +165,7 @@ def cmd_run(a) -> None:
             m, c = r["metrics"], r["check"]
             print(f"  {m['wall_s']:.0f} s, {m.get('gen_tok_s') or 0:.1f} tok/s, "
                   f"{'PASS' if c['passed'] else 'FAIL'}{' (' + c['reason'] + ')' if c.get('reason') else ''}, "
-                  f"machine {r['memory_verdict']}\n", flush=True)
+                  f"machine {r['memory_verdict']}{memory.why(r['memory'])}\n", flush=True)
     if not results["runs"]:
         sys.exit(130 if interrupted else "no runs finished")
     report.write(out)

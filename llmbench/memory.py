@@ -146,6 +146,15 @@ def summarise(samples: list[dict], t_start: float, t_end: float) -> dict:
     }
 
 
+def why(mem: dict) -> str:
+    """The figures behind the verdict, e.g. ' (0.2 GB in, 9.4 GB out, peak 812 MB/s)'."""
+    if not mem.get("available"):
+        return ""
+    gb = lambda k: (mem.get(k) or 0) / 1024
+    return (f" ({gb('swapped_in_mb'):.1f} GB in, {gb('swapped_out_mb'):.1f} GB out, "
+            f"peak {mem.get('peak_swap_mb_s') or 0:.0f} MB/s)")
+
+
 def verdict(mem: dict) -> str:
     """One word on how the rest of the machine fared. Thresholds are judgement calls, stated in the README."""
     if not mem.get("available"):
