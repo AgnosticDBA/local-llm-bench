@@ -1,0 +1,51 @@
+name: Share a result
+description: Post the numbers from `llmbench share`, so others with the same hardware can compare.
+title: "[result] <chip>, <RAM> GB: <models>"
+labels: ["result"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing. Before you paste, three things:
+
+        - **Paste the contents of `share.md` (written by `llmbench share`), not `results.json` or `report.md`.** `share` keeps only an allow-list of
+          numbers and refuses custom-task runs by default. `results.json` holds the model's full answers.
+        - **Read what you paste.** `share` cannot judge your model names: a private fine-tune's name is yours to check.
+        - **This post is public and shows your GitHub username.** Nothing in the share output identifies you,
+          but the account you post from does. A separate account is fine if you prefer.
+
+        Posted something by mistake? Editing is not enough, because GitHub keeps the edit history, and only
+        the maintainer can delete an issue. Report it privately (the "Report a privacy or security problem"
+        link when you open a new issue, or SECURITY.md) and the whole issue will be deleted. Deleting cannot recall
+        notification emails already sent, so read share.md before you post.
+  - type: textarea
+    id: share
+    attributes:
+      label: Contents of share.md
+      description: The whole of share.md (written by `llmbench share`), including the JSON block. Not report.md or results.json.
+      placeholder: "**llmbench 0.1.0** · 2026-10-28 · Apple M1 Pro ..."
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: What else was running?
+      description: Optional, in general terms. For example, "browser with ~30 tabs, IDE, chat app" or "freshly rebooted".
+    validations:
+      required: false
+  - type: textarea
+    id: notes
+    attributes:
+      label: Anything surprising?
+      description: Optional. A model that failed in an interesting way, a setting that made a difference, and so on.
+    validations:
+      required: false
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Before posting
+      options:
+        - label: I pasted the contents of share.md, not results.json, report.md or anything else.
+          required: true
+        - label: I have read it, and it contains nothing I consider private (check the model names in particular).
+          required: true

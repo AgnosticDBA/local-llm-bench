@@ -1,0 +1,9 @@
+runs/
+# your own tasks: only the shipped ones belong in the repo
+llmbench/tasks/*
+!llmbench/tasks/gap-analysis/
+__pycache__/
+*.egg-info/
+.venv/
+build/
+dist/

@@ -1,0 +1,2 @@
+# the built-in task is fingerprinted: keep its bytes identical on every platform
+llmbench/tasks/** -text

@@ -1,0 +1,63 @@
+{
+ "name": "gap-analysis",
+ "description": "Match a CV against a job posting: quotes must be verbatim, and the known gaps must be found (fictional data, with traps)",
+ "sources": {
+  "posting": "posting.md",
+  "cv": "cv.md"
+ },
+ "system": "You are a careful technical recruiter. You compare a candidate's CV against a job posting and report strengths and gaps. You never paraphrase: every requirement you cite is copied word for word from the job posting, and every piece of evidence is copied word for word from the CV. If you cannot quote it, leave it out. Reply with one JSON object and nothing else.",
+ "user": "JOB POSTING:\n\n{posting}\n\n---\n\nCV:\n\n{cv}\n\n---\n\nReturn exactly this JSON shape:\n{\n  \"fit_percent\": <integer 0-100>,\n  \"strengths\": [{\"requirement\": \"<exact text from the posting>\", \"evidence\": \"<exact text from the CV>\"}],\n  \"gaps\": [{\"requirement\": \"<exact text from the posting>\", \"kind\": \"hard\" or \"soft\", \"note\": \"<one sentence in your own words>\"}]\n}\nList the 3 to 6 strongest matches and every gap that matters. Copy quotes exactly; do not fix typos or change wording.",
+ "options": {
+  "temperature": 0.2,
+  "num_ctx": 16384,
+  "num_predict": 12288
+ },
+ "checks": {
+  "strengths[].requirement": "posting",
+  "strengths[].evidence": "cv",
+  "gaps[].requirement": "posting"
+ },
+ "gate": {
+  "min_kept": {
+   "strengths": 2,
+   "gaps": 1
+  },
+  "max_kept": {
+   "strengths": 6,
+   "gaps": 8
+  },
+  "min_kept_ratio": 0.6,
+  "min_found": 3,
+  "max_wrong": 0
+ },
+ "judgement": {
+  "gaps": {
+   "field": "requirement",
+   "must_include": [
+    "SQL Server",
+    "Kafka",
+    "CloudNativePG",
+    "Dutch"
+   ],
+   "must_exclude": [
+    "Patroni",
+    "Terraform",
+    "on-call",
+    "Aurora",
+    "At least 7 years",
+    "English",
+    "cost optimisation"
+   ]
+  },
+  "strengths": {
+   "field": "requirement",
+   "must_include": [],
+   "must_exclude": [
+    "SQL Server",
+    "Kafka",
+    "CloudNativePG",
+    "Dutch"
+   ]
+  }
+ }
+}

@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "local-llm-bench"
+version = "0.1.0"
+description = "Will this local LLM run on my machine, and can I trust what it says? Speed, memory pressure and a quote-checked quality gate."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.9"
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/AgnosticDBA/local-llm-bench"
+Issues = "https://github.com/AgnosticDBA/local-llm-bench/issues"
+
+[project.scripts]
+llmbench = "llmbench.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["llmbench*"]
+
+[tool.setuptools.package-data]
+llmbench = ["tasks/*/*"]

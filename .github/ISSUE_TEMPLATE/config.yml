@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Report a privacy or security problem privately
+    url: https://github.com/AgnosticDBA/local-llm-bench/security/advisories/new
+    about: For a leak in the tool, or something private posted here by mistake. Do not open a public issue for these.
